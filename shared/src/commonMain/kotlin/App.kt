@@ -1,7 +1,9 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -16,13 +18,15 @@ import kotlin.random.Random
 val ROAD_SIZE = 50f
 val WORLD_SIZE = 1000f
 val TOWER_SIZE = 40f
-val UNIT_SPEED = 5f
-var enemies by mutableStateOf<List<Enemy>>(emptyList())
-var towers by mutableStateOf<List<Tower>>(emptyList())
+val UNIT_SPEED = 10f
+val enemies = mutableListOf<Enemy>()
+val towers = mutableListOf<Tower>()
+val gameTicks = mutableStateOf(0)
 
 suspend fun gameLogic() {
     val roadBegin = roadBlocks.first()
     while (true) {
+        gameTicks.value = gameTicks.value + 1
         delay(1000 / 60)
         if (Random.nextInt(20) == 0) {
             enemies += Enemy(
@@ -30,20 +34,20 @@ suspend fun gameLogic() {
                 roadBegin.y + Random.nextDouble(ROAD_SIZE.toDouble()).toFloat(),
             )
         }
-        enemies = enemies.map { enemy ->
-            val currentIndex = roadBlocks.indexOfFirst {
+        val removeEnemies = mutableListOf<Enemy>()
+        enemies.forEach { enemy ->
+            val currentRoadIndex = roadBlocks.indexOfFirst {
                 enemy.x >= it.x && enemy.x <= it.x + ROAD_SIZE && enemy.y >= it.y && enemy.y <= it.y + ROAD_SIZE
             }
-            val next = roadBlocks.getOrNull(currentIndex + 1)
-            if (next != null) {
-                enemy.copy(
-                    x = enemy.x + (next.centerX - enemy.x).coerceIn(-UNIT_SPEED, UNIT_SPEED),
-                    y = enemy.y + (next.centerY - enemy.y).coerceIn(-UNIT_SPEED, UNIT_SPEED)
-                )
+            val nextRoadBlock = roadBlocks.getOrNull(currentRoadIndex + 1)
+            if (nextRoadBlock != null) {
+                enemy.x += (nextRoadBlock.centerX - enemy.x).coerceIn(-UNIT_SPEED, UNIT_SPEED)
+                enemy.y += (nextRoadBlock.centerY - enemy.y).coerceIn(-UNIT_SPEED, UNIT_SPEED)
             } else {
-                enemy
+                removeEnemies.add(enemy)
             }
         }
+        enemies.removeAll(removeEnemies)
     }
 }
 
@@ -72,6 +76,7 @@ fun GameField() {
             }
         }
     }) {
+        gameTicks.value
         for (road in roadBlocks) {
             drawRect(
                 Color.DarkGray,
@@ -92,7 +97,7 @@ fun GameField() {
     }
 }
 
-data class Enemy(val x: Float, val y: Float)
+class Enemy(var x: Float, var y: Float)
 data class Tower(val x: Float, val y: Float)
 data class RoadBlock(val i: Int, val j: Int)
 
