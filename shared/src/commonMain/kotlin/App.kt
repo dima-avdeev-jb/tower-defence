@@ -12,13 +12,17 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
 import kotlinx.coroutines.delay
+import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 import kotlin.random.Random
 
-val ROAD_SIZE = 50f
 val WORLD_SIZE = 1000f
+val ROAD_SIZE = 50f
 val TOWER_SIZE = 40f
-val UNIT_SPEED = 10f
+val ATTACK_DISTANCE = 200f
+val ENEMY_SPEED = 10f
+val ENEMY_HEALTH = 50
 val enemies = mutableListOf<Enemy>()
 val towers = mutableListOf<Tower>()
 val gameTicks = mutableStateOf(0)
@@ -35,20 +39,38 @@ suspend fun gameLogic() {
             )
         }
         val removeEnemies = mutableListOf<Enemy>()
+        enemies.removeAll { it.health <= 0 }
         enemies.forEach { enemy ->
             val currentRoadIndex = roadBlocks.indexOfFirst {
                 enemy.x >= it.x && enemy.x <= it.x + ROAD_SIZE && enemy.y >= it.y && enemy.y <= it.y + ROAD_SIZE
             }
             val nextRoadBlock = roadBlocks.getOrNull(currentRoadIndex + 1)
             if (nextRoadBlock != null) {
-                enemy.x += (nextRoadBlock.centerX - enemy.x).coerceIn(-UNIT_SPEED, UNIT_SPEED)
-                enemy.y += (nextRoadBlock.centerY - enemy.y).coerceIn(-UNIT_SPEED, UNIT_SPEED)
+                enemy.x += (nextRoadBlock.centerX - enemy.x).coerceIn(-ENEMY_SPEED, ENEMY_SPEED)
+                enemy.y += (nextRoadBlock.centerY - enemy.y).coerceIn(-ENEMY_SPEED, ENEMY_SPEED)
             } else {
                 removeEnemies.add(enemy)
             }
         }
         enemies.removeAll(removeEnemies)
+        towers.forEach { tower ->
+            val nearestEnemy = enemies.sortedBy { distance(tower, it) }.firstOrNull()
+            if (nearestEnemy != null) {
+                if (distance(tower, nearestEnemy) < ATTACK_DISTANCE) {
+                    tower.attack = nearestEnemy
+                    nearestEnemy.health--
+                } else {
+                    tower.attack = null
+                }
+            } else {
+                tower.attack = null
+            }
+        }
     }
+}
+
+fun distance(tower: Tower, enemy: Enemy): Float {
+    return sqrt((tower.x - enemy.x).pow(2) + (tower.y - enemy.y).pow(2))
 }
 
 @Composable
@@ -71,7 +93,7 @@ fun GameField() {
                 val event = awaitPointerEvent()
                 if (event.type == PointerEventType.Release) {
                     val position = event.changes[0].position
-                    towers += Tower(position.x, position.y)
+                    towers += Tower(position.x, position.y, null)
                 }
             }
         }
@@ -79,13 +101,15 @@ fun GameField() {
         gameTicks.value
         for (road in roadBlocks) {
             drawRect(
-                Color.DarkGray,
+                Color.Gray,
                 Offset(road.i * ROAD_SIZE, road.j * ROAD_SIZE),
                 Size(ROAD_SIZE, ROAD_SIZE)
             )
         }
         for (enemy in enemies) {
-            drawCircle(Color.Red, radius = 10f, center = Offset(enemy.x, enemy.y))
+            val enemyColor =
+                Color(red = (1f - enemy.health.toFloat() / ENEMY_HEALTH).coerceIn(0f, 1f), green = 0f, blue = 0f)
+            drawCircle(enemyColor, radius = 10f, center = Offset(enemy.x, enemy.y))
         }
         for (tower in towers) {
             drawRect(
@@ -93,12 +117,21 @@ fun GameField() {
                 topLeft = Offset(tower.x - TOWER_SIZE / 2, tower.y - TOWER_SIZE / 2),
                 size = Size(TOWER_SIZE, TOWER_SIZE)
             )
+            val attack = tower.attack
+            if (attack != null) {
+                drawLine(
+                    Color.Green,
+                    start = Offset(tower.x, tower.y),
+                    end = Offset(attack.x, attack.y),
+                    strokeWidth = 4f
+                )
+            }
         }
     }
 }
 
-class Enemy(var x: Float, var y: Float)
-data class Tower(val x: Float, val y: Float)
+class Enemy(var x: Float, var y: Float, var health: Int = ENEMY_HEALTH)
+class Tower(val x: Float, val y: Float, var attack: Enemy?)
 data class RoadBlock(val i: Int, val j: Int)
 
 val RoadBlock.x get() = i * ROAD_SIZE
