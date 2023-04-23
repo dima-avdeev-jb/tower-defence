@@ -15,38 +15,36 @@ fun April23() {
 //    println(f1(2.0))
 //    println(Math.pow(2.0, 3.0)) // power 2 ^ 3 = 8
 //    Math.sqrt(4.0) // 2.0
-//}
-//
-//fun f1(x: Double): Double {
-//    val y = x * x + 2 * x + 3
-//    return y
+//    Math.abs(-1.34) // 1.34 - Модуль
 
     println(solve(4.0, 36.0, 4.4))
-
 }
 
+fun f1(x: Double): Double {
+    val y = x * x + 2 * x + 3
+    return y
+}
 
 fun solve(a: Double, b: Double, c: Double): Double {
     val d = b * b - 4 * a * c
     if (d < 0) {
-
-        println("D < 0 ")
+        println("D < 0")
         return Double.NaN
     } else {
         val x = (-b + Math.sqrt(d)) / (2 * a)
         val y = check(a, b, c, x)
-        check(a, b, c, x)
-        println("y=$y")
-        return x
-
-
+        if (Math.abs(y) < 0.00001) {
+            println("Success")
+            return x
+        } else {
+            println("Fail")
+            return Double.NaN
+        }
     }
 
 }
 
 fun check(a: Double, b: Double, c: Double, x: Double): Double {
-
     val y = a * x * x + b * x + c
     return y
-
 }

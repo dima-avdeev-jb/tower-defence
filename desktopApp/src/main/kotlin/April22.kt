@@ -32,10 +32,7 @@ fun findMaxInMax(listOfList: List<List<Int>>) {
 
     for (i in listOfList) {
         val max = findMaxValueInArray(i)
-
-
         println(max)
-
     }
 
 }
