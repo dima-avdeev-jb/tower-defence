@@ -169,28 +169,28 @@ val RoadBlock.y get() = j * ROAD_SIZE
 val RoadBlock.centerX get() = i * ROAD_SIZE + ROAD_SIZE / 2
 val RoadBlock.centerY get() = j * ROAD_SIZE + ROAD_SIZE / 2
 
-val roadBlocks = sequence {
+val roadBlocks = buildList {
     // Это создаются квадратики для дороги
     val s = (WORLD_SIZE / ROAD_SIZE).roundToInt()
-    yield(RoadBlock(s / 2, 0))
-    yield(RoadBlock(s / 2, 1))
-    yield(RoadBlock(s / 2, 2))
+    add(RoadBlock(s / 2, 0))
+    add(RoadBlock(s / 2, 1))
+    add(RoadBlock(s / 2, 2))
     for (x in (2..s / 2).reversed()) {
-        yield(RoadBlock(x, 3))
+        add(RoadBlock(x, 3))
     }
     for (y in 4..s / 2) {
-        yield(RoadBlock(2, y))
+        add(RoadBlock(2, y))
     }
     for (x in 2..s - 2) {
-        yield(RoadBlock(x, s / 2))
+        add(RoadBlock(x, s / 2))
     }
     for (y in s / 2..s - 4) {
-        yield(RoadBlock(s - 2, y))
+        add(RoadBlock(s - 2, y))
     }
     for (x in (s / 2..s - 2).reversed()) {
-        yield(RoadBlock(x, s - 4))
+        add(RoadBlock(x, s - 4))
     }
-    yield(RoadBlock(s / 2, s - 3))
-    yield(RoadBlock(s / 2, s - 2))
-    yield(RoadBlock(s / 2, s - 1))
+    add(RoadBlock(s / 2, s - 3))
+    add(RoadBlock(s / 2, s - 2))
+    add(RoadBlock(s / 2, s - 1))
 }.distinct().toList()
