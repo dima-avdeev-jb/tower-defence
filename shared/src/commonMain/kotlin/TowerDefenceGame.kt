@@ -73,9 +73,9 @@ class TowerDefenceGame : BaseGame() {
         }
     }
 
-    override fun drawGame(draw: Draw) {
+    override fun drawGame(draw: Draw) { // draw - рисовать
         draw.text(0, 0, "You: $yourScore, Enemy: $enemyScore")
-        for (road in roadBlocks) {
+        for (road in roadBlocks) { // Рисуем дорогу
             draw.rectangle(
                 road.i * ROAD_SIZE, road.j * ROAD_SIZE,
                 ROAD_SIZE, ROAD_SIZE,
