@@ -22,5 +22,6 @@ fun main(args: Array<String>) {
 fun lessons() {
 //    April22()
 //    April23()
-    April23_1()
+    List_theory_1()
+    List_practic_1()
 }

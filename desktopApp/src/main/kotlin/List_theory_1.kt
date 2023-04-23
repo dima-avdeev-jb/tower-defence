@@ -1,4 +1,4 @@
-fun April23_1() {
+fun List_theory_1() {
     val list: List<String> = listOf("a", "b", "c")
     println(list) // [a, b, c]
                    // 0  1  2 - indexes
