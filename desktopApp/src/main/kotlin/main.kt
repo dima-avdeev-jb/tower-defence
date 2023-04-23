@@ -20,5 +20,7 @@ fun main(args: Array<String>) {
 }
 
 fun lessons() {
-    println("Уроки")
+
+    println("Lesson")
+
 }
