@@ -16,6 +16,7 @@ val gameTick = mutableStateOf(0)
 
 fun distance(tower: Tower, enemy: Enemy): Double {
     return sqrt((tower.x - enemy.x).pow(2) + (tower.y - enemy.y).pow(2))
+    // sqrt = Square Root (Квадратный корень)
 }
 
 @Composable
