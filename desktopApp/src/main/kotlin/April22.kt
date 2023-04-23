@@ -1,5 +1,4 @@
 fun April22() {
-
     var str = "Hello"
     var list = listOf(1, 2, 3)
     for (i in 0..10) {
@@ -22,6 +21,16 @@ fun April22() {
     println(sum(1, 2))
     val max = findMaxValueInArray(listOf(-12, -3, 4, 8, 2, 5))
     println(max)
+    var list1 = listOf(1, 2, 3)
+    var list2 = listOf(4, 2, 4)
+    var list3 = listOf(2, 5, 0)
+    val max2 = findMaxInMax(listOf(list1, list2, list3))
+    println(max2)
+}
+
+fun findMaxInMax(listOfList: List<List<Int>>): Int {
+
+    return 0
 }
 
 fun fun1() {
@@ -38,7 +47,6 @@ fun findMaxValueInArray(list: List<Int>): Int {
         if (a < i) {
             a = i
         }
-
     }
     return a
 }
