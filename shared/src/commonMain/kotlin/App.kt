@@ -1,9 +1,11 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.material.Button
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -11,6 +13,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.ExperimentalTextApi
+import androidx.compose.ui.text.drawText
+import androidx.compose.ui.text.rememberTextMeasurer
 import kotlinx.coroutines.delay
 import kotlin.math.pow
 import kotlin.math.roundToInt
@@ -23,15 +28,16 @@ val TOWER_SIZE = 40f
 val ATTACK_DISTANCE = 200f
 val ENEMY_SPEED = 10f
 val ENEMY_HEALTH = 50
-val enemies = mutableListOf<Enemy>()
-val towers = mutableListOf<Tower>()
 val gameTicks = mutableStateOf(0)
 
-suspend fun gameLogic() {
-    val roadBegin = roadBlocks.first()
-    while (true) {
-        gameTicks.value = gameTicks.value + 1
-        delay(1000 / 60)
+class GameState {
+    var enemyScore: Int = 0
+    var yourScore: Int = 0
+    val enemies = mutableListOf<Enemy>()
+    val towers = mutableListOf<Tower>()
+
+    fun tick() {
+        val roadBegin = roadBlocks.first()
         if (Random.nextInt(20) == 0) {
             enemies += Enemy(
                 roadBegin.x + Random.nextDouble(ROAD_SIZE.toDouble()).toFloat(),
@@ -39,6 +45,7 @@ suspend fun gameLogic() {
             )
         }
         val removeEnemies = mutableListOf<Enemy>()
+        yourScore += enemies.count { it.health <= 0 }
         enemies.removeAll { it.health <= 0 }
         enemies.forEach { enemy ->
             val currentRoadIndex = roadBlocks.indexOfFirst {
@@ -49,6 +56,7 @@ suspend fun gameLogic() {
                 enemy.x += (nextRoadBlock.centerX - enemy.x).coerceIn(-ENEMY_SPEED, ENEMY_SPEED)
                 enemy.y += (nextRoadBlock.centerY - enemy.y).coerceIn(-ENEMY_SPEED, ENEMY_SPEED)
             } else {
+                enemyScore++
                 removeEnemies.add(enemy)
             }
         }
@@ -69,6 +77,8 @@ suspend fun gameLogic() {
     }
 }
 
+var gameState: GameState = GameState()
+
 fun distance(tower: Tower, enemy: Enemy): Float {
     return sqrt((tower.x - enemy.x).pow(2) + (tower.y - enemy.y).pow(2))
 }
@@ -76,15 +86,30 @@ fun distance(tower: Tower, enemy: Enemy): Float {
 @Composable
 fun App() {
     LaunchedEffect(Unit) {
-        gameLogic()
+        while (true) {
+            gameTicks.value = gameTicks.value + 1
+            delay(1000 / 60)
+            gameState.tick()
+        }
     }
     Box(Modifier.fillMaxSize()) {
         GameField()
     }
+    Box(Modifier.fillMaxSize()) {
+        Row(Modifier.align(Alignment.BottomCenter)) {
+            Button(onClick = {
+                gameState = GameState()
+            }) {
+                Text("Restart")
+            }
+        }
+    }
 }
 
+@OptIn(ExperimentalTextApi::class)
 @Composable
 fun GameField() {
+    val rememberTextMeasurer = rememberTextMeasurer()
     val density = LocalDensity.current
     density.density
     Canvas(Modifier.fillMaxSize().pointerInput(Unit) {
@@ -93,12 +118,17 @@ fun GameField() {
                 val event = awaitPointerEvent()
                 if (event.type == PointerEventType.Release) {
                     val position = event.changes[0].position
-                    towers += Tower(position.x, position.y, null)
+                    gameState.towers += Tower(position.x, position.y, null)
                 }
             }
         }
     }) {
         gameTicks.value
+        drawText(
+            rememberTextMeasurer,
+            text = "You: ${gameState.yourScore}, Enemy: ${gameState.enemyScore}",
+            Offset(0f, 0f)
+        )
         for (road in roadBlocks) {
             drawRect(
                 Color.Gray,
@@ -106,12 +136,12 @@ fun GameField() {
                 Size(ROAD_SIZE, ROAD_SIZE)
             )
         }
-        for (enemy in enemies) {
+        for (enemy in gameState.enemies) {
             val enemyColor =
                 Color(red = (1f - enemy.health.toFloat() / ENEMY_HEALTH).coerceIn(0f, 1f), green = 0f, blue = 0f)
             drawCircle(enemyColor, radius = 10f, center = Offset(enemy.x, enemy.y))
         }
-        for (tower in towers) {
+        for (tower in gameState.towers) {
             drawRect(
                 color = Color.Blue,
                 topLeft = Offset(tower.x - TOWER_SIZE / 2, tower.y - TOWER_SIZE / 2),
