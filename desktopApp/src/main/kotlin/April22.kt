@@ -1,4 +1,4 @@
-fun main() {
+fun April22() {
     var a = 1
     var str = "Hello"
     var list = listOf(1, 2, 3)

@@ -20,5 +20,5 @@ fun main(args: Array<String>) {
 }
 
 fun lessons() {
-    println("Уроки")
+    April22()
 }
