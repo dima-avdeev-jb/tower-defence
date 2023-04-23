@@ -16,7 +16,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
-import kotlinx.coroutines.delay
 import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sqrt
@@ -26,11 +25,11 @@ val WORLD_SIZE = 1000f
 val ROAD_SIZE = 50f
 val TOWER_SIZE = 40f
 val ATTACK_DISTANCE = 200f
-val ENEMY_SPEED = 10f
-val ENEMY_HEALTH = 50
-val gameTicks = mutableStateOf(0)
+val ENEMY_SPEED = 3f
+val ENEMY_HEALTH = 60
 
 class GameState {
+    val ticks = mutableStateOf(0)
     var enemyScore: Int = 0
     var yourScore: Int = 0
     val enemies = mutableListOf<Enemy>()
@@ -85,13 +84,6 @@ fun distance(tower: Tower, enemy: Enemy): Float {
 
 @Composable
 fun App() {
-    LaunchedEffect(Unit) {
-        while (true) {
-            gameTicks.value = gameTicks.value + 1
-            delay(1000 / 60)
-            gameState.tick()
-        }
-    }
     Box(Modifier.fillMaxSize()) {
         GameField()
     }
@@ -123,10 +115,11 @@ fun GameField() {
             }
         }
     }) {
-        gameTicks.value
+        gameState.ticks.value++
+        gameState.tick()
         drawText(
             rememberTextMeasurer,
-            text = "You: ${gameState.yourScore}, Enemy: ${gameState.enemyScore}",
+            "You: ${gameState.yourScore}, Enemy: ${gameState.enemyScore}",
             Offset(0f, 0f)
         )
         for (road in roadBlocks) {
@@ -138,7 +131,11 @@ fun GameField() {
         }
         for (enemy in gameState.enemies) {
             val enemyColor =
-                Color(red = (1f - enemy.health.toFloat() / ENEMY_HEALTH).coerceIn(0f, 1f), green = 0f, blue = 0f)
+                Color(
+                    red = (1f - enemy.health.toFloat() / ENEMY_HEALTH).coerceIn(0f, 1f),
+                    green = 0f,
+                    blue = 0f
+                )
             drawCircle(enemyColor, radius = 10f, center = Offset(enemy.x, enemy.y))
         }
         for (tower in gameState.towers) {
@@ -157,6 +154,7 @@ fun GameField() {
                 )
             }
         }
+        drawImage(getImage("castle.png"), Offset(450f, 950f))
     }
 }
 
