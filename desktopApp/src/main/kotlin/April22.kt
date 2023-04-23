@@ -15,22 +15,29 @@ fun April22() {
             }
         }
     }
-    fun1()
-    val c = sum(1, 2)
-    println(c)
-    println(sum(1, 2))
-    val max = findMaxValueInArray(listOf(-12, -3, 4, 8, 2, 5))
-    println(max)
+//    fun1()
+//    val c = sum(1, 2)
+//    println(c)
+//    println(sum(1, 2))
+//    val max = findMaxValueInArray(listOf(-12, -3, 4, 8, 2, 5))
+//    println(max)
     var list1 = listOf(1, 2, 3)
     var list2 = listOf(4, 2, 4)
     var list3 = listOf(2, 5, 0)
-    val max2 = findMaxInMax(listOf(list1, list2, list3))
-    println(max2)
+    findMaxInMax(listOf(list1, list2, list3))
+
 }
 
-fun findMaxInMax(listOfList: List<List<Int>>): Int {
+fun findMaxInMax(listOfList: List<List<Int>>) {
 
-    return 0
+    for (i in listOfList) {
+        val max = findMaxValueInArray(i)
+
+
+        println(max)
+
+    }
+
 }
 
 fun fun1() {
