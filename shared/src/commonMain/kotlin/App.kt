@@ -23,7 +23,8 @@ fun distance(tower: Tower, enemy: Enemy): Double {
 fun App() {
     Box(Modifier.fillMaxSize()) {
         GameView {
-            TowerDefenceGame()
+//            TowerDefenceGame()
+            PaintGame()
         }
     }
     Box(Modifier.fillMaxSize()) {
