@@ -26,5 +26,7 @@ fun lessons() {
 //    List_practic_1()
 //    Class_theory_1()
 //    Class_practice_1()
-    Type_teory()
+//    Type_teory()
+//    LoopTeory_1()
+    IfElse_teory_1()
 }
