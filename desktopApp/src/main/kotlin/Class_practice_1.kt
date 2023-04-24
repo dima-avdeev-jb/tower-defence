@@ -5,7 +5,7 @@ fun Class_practice_1() {
 
 class PrintLapsAndName(var age: Int, var name: String) {
     fun laps() {
-
         println("You car have  $age yers old, and his name $name ")
+
     }
 }
