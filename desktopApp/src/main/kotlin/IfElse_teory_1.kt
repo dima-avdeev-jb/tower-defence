@@ -2,14 +2,32 @@ fun IfElse_teory_1() {
 
     var a = 3
     if (a == 2) {
-        println("Горячо")
+        println("Hot")
     } else if (a == 3) {
-        println("Угадали")
-    } else if(a == 4){
-        println("Горячо")
+        println("Success")
+    } else if (a == 4) {
+        println("Hot")
+    } else {
+        println("Cold")
     }
-    else{
-        println("Холодно")
+
+    var c = 3
+    when (c) {
+        2 -> {
+            println("Hot")
+        }
+
+        3 -> {
+            println("Success")
+        }
+
+        4 -> {
+            println("Hot")
+        }
+
+        else -> {
+            println("Cold")
+        }
     }
 
 }
