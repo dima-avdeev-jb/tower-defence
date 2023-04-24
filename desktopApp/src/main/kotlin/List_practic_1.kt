@@ -30,4 +30,3 @@ fun List_practic_1() {
     }
     println(list)
 }
-
