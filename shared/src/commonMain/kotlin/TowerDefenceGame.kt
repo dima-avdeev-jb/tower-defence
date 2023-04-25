@@ -74,7 +74,7 @@ class TowerDefenceGame : BaseGame() {
     }
 
     override fun drawGame(draw: Draw) { // draw - рисовать
-        draw.text(0, 0, "You: $yourScore, Enemy: $enemyScore")
+        draw.text(100, 950, "You: $yourScore, Enemy: $enemyScore")
         for (road in roadBlocks) { // Рисуем дорогу
             draw.rectangle(
                 road.i * ROAD_SIZE, road.j * ROAD_SIZE,
@@ -107,7 +107,7 @@ class TowerDefenceGame : BaseGame() {
                 )
             }
         }
-        draw.image(450f, 950f, getImage("castle.png"))
+        draw.image(500, 950f, getImage("castle.png"))
     }
 
     override fun onClick(x: Double, y: Double) {

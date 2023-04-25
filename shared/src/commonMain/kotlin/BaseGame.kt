@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -38,6 +41,9 @@ open class BaseGame {
 @OptIn(ExperimentalTextApi::class)
 @Composable
 fun GameView(getGame: () -> BaseGame) {
+    val virtualSize = 1000f
+    val sizeState = remember { mutableStateOf(Size(1000f, 1000f)) }
+    val realSize by derivedStateOf { minOf(sizeState.value.width, sizeState.value.height) }
     val game = remember { mutableStateOf(getGame()) }
     val textMeasure = rememberTextMeasurer()
     Box(Modifier.fillMaxSize()) {
@@ -47,15 +53,19 @@ fun GameView(getGame: () -> BaseGame) {
                     val event = awaitPointerEvent()
                     if (event.type == PointerEventType.Release) {
                         val position = event.changes[0].position
+
+                        val y = sizeState.value.height - position.y.toDouble()
+                        val x = position.x.toDouble()
+
                         game.value.onClick(
-                            position.x.toDouble(), position.y.toDouble()
+                            x / realSize * virtualSize,
+                            y / realSize * virtualSize,
                         )
                     }
                 }
             }
         }) {
-            val virtualSize = 1000f
-            val realSize = minOf(size.width, size.height)
+            sizeState.value = size
             fun Number.real() = toFloat() / virtualSize * realSize
             gameTick.value++
             game.value.tick()
