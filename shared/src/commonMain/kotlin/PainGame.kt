@@ -7,12 +7,14 @@ class PaintGame : BaseGame() {
     }
 
     override fun drawGame(draw: Draw) { // draw - рисовать
-        draw.circle(100, 100, 50, Color.Black)
+        draw.rectangle(0, 0, 500, 500, Color.Yellow)
+        draw.square(100, 100, 200, Color.Black)
+        draw.circle(500, 700, 10, Color.Black)
         draw.square(100, 300, 100, Color.Green)
         draw.rectangle(100, 500, 200, 100, Color.Red)
-        draw.line(300, 300, 700, 400, Color.Black)
-        draw.text(0, 0, "I am Text")
-        draw.image(100, 600, getImage("castle.png"))
+        draw.line(0, 0, 900, 900, Color.Red)
+        draw.image(500, 500, getImage("castle.png"), 2f)
+        draw.text(500, 900, "I am Text")
     }
 
     override fun onClick(x: Double, y: Double) {

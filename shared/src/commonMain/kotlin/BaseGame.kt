@@ -18,6 +18,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.ExperimentalTextApi
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 
 open class BaseGame {
     open fun tick() {
@@ -52,27 +54,61 @@ fun GameView(getGame: () -> BaseGame) {
                 }
             }
         }) {
+            val virtualSize = 1000f
+            val realSize = minOf(size.width, size.height)
+            fun Number.real() = toFloat() / virtualSize * realSize
             gameTick.value++
             game.value.tick()
             game.value.drawGame(object : Draw {
-                override fun text(x: Number, y: Number, text: String) {
-                    drawText(textMeasure, text, Offset(x.toFloat(), y.toFloat()))
+                override fun text(x: Number, y: Number, text: String, backgroundColor: Color) {
+                    val measure = textMeasure.measure(text).size
+                    val y = virtualSize - y.toFloat()
+                    val x = x.toFloat()
+                    val backgroundPadding = 2f
+                    drawRect(
+                        backgroundColor,
+                        Offset(
+                            x.real() - backgroundPadding - measure.width.toFloat() / 2,
+                            y.real() - backgroundPadding - measure.height.toFloat() / 2
+                        ),
+                        Size(
+                            measure.width.toFloat() + backgroundPadding * 2,
+                            measure.height.toFloat() + backgroundPadding * 2
+                        )
+                    )
+                    drawText(textMeasure, text, Offset(x.real() - measure.width / 2, y.real() - measure.height / 2))
                 }
 
-                override fun image(x: Number, y: Number, image: ImageBitmap) {
-                    drawImage(image, topLeft = Offset(x.toFloat(), y.toFloat()))
+                override fun image(x: Number, y: Number, image: ImageBitmap, scale: Number) {
+                    val w = image.width * scale.toFloat()
+                    val h = image.height * scale.toFloat()
+                    val y = virtualSize - y.toFloat()
+                    val dstOffset = IntOffset(
+                        x = (x.toFloat() - w.toFloat() / 2).real().toInt(),
+                        y = (y.toFloat() - h.toFloat() / 2).real().toInt()
+                    )
+                    drawImage(
+                        image,
+                        srcSize = IntSize(image.width, image.height),
+                        dstOffset = dstOffset,
+                        dstSize = IntSize(w.real().toInt(), h.real().toInt())
+                    )
                 }
 
                 override fun circle(x: Number, y: Number, radius: Number, color: Color) {
-                    drawCircle(color, radius.toFloat(), Offset(x.toFloat(), y.toFloat()))
+                    val y = virtualSize - y.toFloat()
+                    drawCircle(color, radius.real(), Offset(x.real(), y.real()))
                 }
 
                 override fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color) {
-                    drawRect(color, topLeft = Offset(x.toFloat(), y.toFloat()), size = Size(width.toFloat(), height.toFloat()))
+                    val y = virtualSize - y.toFloat() - height.toFloat()
+                    drawRect(color, topLeft = Offset(x.real(), y.real()), size = Size(width.real(), height.real()))
                 }
 
                 override fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, width: Number) {
-                    drawLine(color, Offset(x1.toFloat(), y1.toFloat()), Offset(x2.toFloat(), y2.toFloat()), strokeWidth = width.toFloat())
+                    val y1 = virtualSize - y1.toFloat()
+                    val y2 = virtualSize - y2.toFloat()
+                    drawLine(color, Offset(x1.real(), y1.real()), Offset(x2.real(), y2.real()), strokeWidth = width.real())
                 }
             })
         }
@@ -89,8 +125,8 @@ fun GameView(getGame: () -> BaseGame) {
 }
 
 interface Draw {
-    fun text(x: Number, y: Number, text: String)
-    fun image(x: Number, y: Number, image: ImageBitmap)
+    fun text(x: Number, y: Number, text: String, backgroundColor: Color = Color.White)
+    fun image(x: Number, y: Number, image: ImageBitmap, scale: Number = 1f)
     fun circle(x: Number, y: Number, radius: Number, color: Color)
     fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color)
     fun square(centerX: Number, centerY: Number, size: Number, color: Color) {
