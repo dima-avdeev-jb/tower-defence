@@ -11,7 +11,7 @@ object Main {
             val str = args.get(0)
             if (str == "game") {
                 application {
-                    Window(state = rememberWindowState(width = 1100.dp, height = 1100.dp), onCloseRequest = ::exitApplication) {
+                    Window(state = rememberWindowState(width = 900.dp, height = 900.dp), onCloseRequest = ::exitApplication) {
                         App()
                     }
                 }

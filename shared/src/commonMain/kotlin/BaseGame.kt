@@ -9,13 +9,14 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.drawscope.Fill
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.ExperimentalTextApi
@@ -33,7 +34,15 @@ open class BaseGame {
 
     }
 
-    open fun onClick(x: Double, y: Double) {
+    open fun onMouseMove(x: Double, y: Double) {
+
+    }
+
+    open fun onMouseDown(x: Double, y: Double) {
+
+    }
+
+    open fun onMouseUp(x: Double, y: Double) {
 
     }
 }
@@ -51,16 +60,35 @@ fun GameView(getGame: () -> BaseGame) {
             awaitPointerEventScope {
                 while (true) {
                     val event = awaitPointerEvent()
-                    if (event.type == PointerEventType.Release) {
+
+                    if (event.changes.size > 0) {
                         val position = event.changes[0].position
 
                         val y = sizeState.value.height - position.y.toDouble()
                         val x = position.x.toDouble()
 
-                        game.value.onClick(
-                            x / realSize * virtualSize,
-                            y / realSize * virtualSize,
-                        )
+                        when (event.type) {
+                            PointerEventType.Move -> {
+                                game.value.onMouseMove(
+                                    x / realSize * virtualSize,
+                                    y / realSize * virtualSize,
+                                )
+                            }
+
+                            PointerEventType.Press -> {
+                                game.value.onMouseDown(
+                                    x / realSize * virtualSize,
+                                    y / realSize * virtualSize,
+                                )
+                            }
+
+                            PointerEventType.Release -> {
+                                game.value.onMouseUp(
+                                    x / realSize * virtualSize,
+                                    y / realSize * virtualSize,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -98,21 +126,31 @@ fun GameView(getGame: () -> BaseGame) {
                         y = (y.toFloat() - h.toFloat() / 2).real().toInt()
                     )
                     drawImage(
-                        image,
+                        image = image,
                         srcSize = IntSize(image.width, image.height),
                         dstOffset = dstOffset,
                         dstSize = IntSize(w.real().toInt(), h.real().toInt())
                     )
                 }
 
-                override fun circle(x: Number, y: Number, radius: Number, color: Color) {
+                override fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean) {
                     val y = virtualSize - y.toFloat()
-                    drawCircle(color, radius.real(), Offset(x.real(), y.real()))
+                    drawCircle(
+                        color = color,
+                        radius = radius.real(),
+                        center = Offset(x.real(), y.real()),
+                        style = if (fill) Fill else Stroke(width = 2f)
+                    )
                 }
 
-                override fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color) {
+                override fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean) {
                     val y = virtualSize - y.toFloat() - height.toFloat()
-                    drawRect(color, topLeft = Offset(x.real(), y.real()), size = Size(width.real(), height.real()))
+                    drawRect(
+                        color = color,
+                        topLeft = Offset(x.real(), y.real()),
+                        size = Size(width.real(), height.real()),
+                        style = if (fill) Fill else Stroke(width = 2f)
+                    )
                 }
 
                 override fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, width: Number) {
@@ -137,9 +175,9 @@ fun GameView(getGame: () -> BaseGame) {
 interface Draw {
     fun text(x: Number, y: Number, text: String, backgroundColor: Color = Color.White)
     fun image(x: Number, y: Number, image: ImageBitmap, scale: Number = 1f)
-    fun circle(x: Number, y: Number, radius: Number, color: Color)
-    fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color)
-    fun square(centerX: Number, centerY: Number, size: Number, color: Color) {
+    fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean = true)
+    fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean = true)
+    fun square(centerX: Number, centerY: Number, size: Number, color: Color, fill: Boolean = true) {
         rectangle(centerX.toFloat() - size.toFloat() / 2, centerY.toFloat() - size.toFloat() / 2, size, size, color)
     }
 

@@ -32,7 +32,16 @@ class PaintGame : BaseGame() {
 //        draw.text(500, 900, "I am Text")T
     }
 
-    override fun onClick(x: Double, y: Double) {
+    override fun onMouseMove(x: Double, y: Double) {
 
     }
+
+    override fun onMouseDown(x: Double, y: Double) {
+
+    }
+
+    override fun onMouseUp(x: Double, y: Double) {
+
+    }
+
 }

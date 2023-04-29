@@ -110,7 +110,15 @@ class TowerDefenceGame : BaseGame() {
         draw.image(500, 950f, getImage("castle.png"))
     }
 
-    override fun onClick(x: Double, y: Double) {
+    override fun onMouseMove(x: Double, y: Double) {
+
+    }
+
+    override fun onMouseDown(x: Double, y: Double) {
+
+    }
+
+    override fun onMouseUp(x: Double, y: Double) {
         towers += Tower(x, y, null)
     }
 }
