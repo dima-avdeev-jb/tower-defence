@@ -7,17 +7,9 @@ class House(val x: Double, val y: Double) {
 class PaintGame : BaseGame() {
     val houses: MutableList<House> = mutableListOf(House(500.0, 500.0))
 
-    override fun onMouseMove(x: Double, y: Double) {
-
-    }
-
     override fun onMouseDown(x: Double, y: Double) {
         houses.add(House(x, y))
         // Размещать домик
-    }
-
-    override fun onMouseUp(x: Double, y: Double) {
-
     }
 
     override fun drawGame(draw: Draw) { // draw - рисовать
