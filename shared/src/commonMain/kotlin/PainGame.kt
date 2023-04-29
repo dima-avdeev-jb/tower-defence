@@ -37,7 +37,7 @@ class PaintGame : BaseGame() {
         for (e in enemies) {
             draw.circle(e.x, e.y, 25, Color.Red)
         }
-        draw.circle(cat1.x, cat1.y, 50, Color.Red)
+        draw.circle(cat1.x, cat1.y, 50, Color.Blue)
     }
 
     fun drawHouse(draw: Draw, x: Number, y: Number, transparent: Boolean) {
