@@ -18,9 +18,13 @@ class PaintGame : BaseGame() {
             draw.line(0, y, 1000, y, Color.Blue.copy(0.3f), 1)
             draw.text(50, y, "$y")
         }
+        for(i in 1..9){
+            drawHouse(draw, i*100, 100)
+        }
+        for(i in 1..9){
+            drawHouse(draw, i*100, 300)
+        }
 
-        drawHouse(draw, 0, 0)
-        drawHouse(draw, 200, 200)
 //        draw.rectangle(0, 0, 500, 500, Color.Yellow)
 //        draw.square(100, 100, 200, Color.Black)
 //        draw.circle(500, 700, 10, Color.Black)
