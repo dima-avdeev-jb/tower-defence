@@ -26,7 +26,7 @@ class PaintGame : BaseGame() {
 //        draw.rectangle(100, 500, 200, 100, Color.Red)
 //        draw.line(0, 0, 900, 900, Color.Red)
 //        draw.image(500, 500, getImage("castle.png"), 2f)
-//        draw.text(500, 900, "I am Text")
+//        draw.text(500, 900, "I am Text")T
     }
 
     override fun onClick(x: Double, y: Double) {
