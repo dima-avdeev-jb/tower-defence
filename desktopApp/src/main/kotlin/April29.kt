@@ -41,8 +41,7 @@ class Cat(val x:Int){
         println("You have $x cats")
     }
 }
-//fun practik(x:Int) {
-//    println("Tvoe cislo $x")-0
 
+fun practik(x:Int) {
+    println("Tvoe cislo $x")
 }
-
