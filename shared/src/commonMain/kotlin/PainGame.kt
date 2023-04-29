@@ -1,6 +1,15 @@
 import androidx.compose.ui.graphics.Color
 
+class House(val x: Double, val y: Double) {
+
+}
+
 class PaintGame : BaseGame() {
+
+    var mouseX: Double = 0.0
+    var mouseY: Double = 0.0
+    var onMouseDownHouse: Boolean = false
+    val houses: MutableList<House> = mutableListOf()
 
     override fun tick() {
 
@@ -18,11 +27,19 @@ class PaintGame : BaseGame() {
             draw.line(0, y, 1000, y, Color.Blue.copy(0.3f), 1)
             draw.text(50, y, "$y")
         }
-        for(i in 1..9){
-            drawHouse(draw, i*100, 100)
+        for (i in 1..9) {
+            drawHouse(draw, i * 100, 100, true)
         }
-        for(i in 1..9){
-            drawHouse(draw, i*100, 300)
+        for (i in 1..9) {
+            drawHouse(draw, i * 100, 300, true)
+        }
+
+        if (onMouseDownHouse) {
+            drawHouse(draw, mouseX, mouseY, false)
+        }
+
+        for (house in houses) {
+            drawHouse(draw, house.x, house.y, true)
         }
 
 //        draw.rectangle(0, 0, 500, 500, Color.Yellow)
@@ -35,25 +52,28 @@ class PaintGame : BaseGame() {
 //        draw.text(500, 900, "I am Text")T
     }
 
-    fun drawHouse(draw: Draw, x: Number, y: Number) {
-        val xd : Double = x.toDouble()
-        val yd : Double = y.toDouble()
-        draw.square(xd + 50, yd + 50, 100, Color.Black, false)
+    fun drawHouse(draw: Draw, x: Number, y: Number, filled: Boolean) {
+        val xd: Double = x.toDouble()
+        val yd: Double = y.toDouble()
+        draw.square(xd + 50, yd + 50, 100, Color.Black, filled)
         draw.line(xd + 0, yd + 100, xd + 50, yd + 150, Color.Black)
         draw.line(xd + 100, yd + 100, xd + 50, yd + 150, Color.Black)
-        draw.square(xd + 50, yd + 50, 25, Color.Blue)
+        draw.square(xd + 50, yd + 50, 25, Color.Blue, filled)
     }
 
     override fun onMouseMove(x: Double, y: Double) {
-
+        mouseX = x
+        mouseY = y
     }
 
     override fun onMouseDown(x: Double, y: Double) {
-
+        onMouseDownHouse = true
     }
 
     override fun onMouseUp(x: Double, y: Double) {
-
+        houses.add(House(x, y))
+        // Размещать домик
+        onMouseDownHouse = false
     }
 
 }
