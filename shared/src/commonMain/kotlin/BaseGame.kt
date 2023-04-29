@@ -133,30 +133,30 @@ fun GameView(getGame: () -> BaseGame) {
                     )
                 }
 
-                override fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean) {
+                override fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean, breadth: Number) {
                     val y = virtualSize - y.toFloat()
                     drawCircle(
                         color = color,
                         radius = radius.real(),
                         center = Offset(x.real(), y.real()),
-                        style = if (fill) Fill else Stroke(width = 2f)
+                        style = if (fill) Fill else Stroke(width = breadth.real())
                     )
                 }
 
-                override fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean) {
+                override fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean, breadth: Number) {
                     val y = virtualSize - y.toFloat() - height.toFloat()
                     drawRect(
                         color = color,
                         topLeft = Offset(x.real(), y.real()),
                         size = Size(width.real(), height.real()),
-                        style = if (fill) Fill else Stroke(width = 2f)
+                        style = if (fill) Fill else Stroke(width = breadth.real())
                     )
                 }
 
-                override fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, width: Number) {
+                override fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, breadth: Number) {
                     val y1 = virtualSize - y1.toFloat()
                     val y2 = virtualSize - y2.toFloat()
-                    drawLine(color, Offset(x1.real(), y1.real()), Offset(x2.real(), y2.real()), strokeWidth = width.real())
+                    drawLine(color, Offset(x1.real(), y1.real()), Offset(x2.real(), y2.real()), strokeWidth = breadth.real())
                 }
             })
         }
@@ -175,11 +175,11 @@ fun GameView(getGame: () -> BaseGame) {
 interface Draw {
     fun text(x: Number, y: Number, text: String, backgroundColor: Color = Color.White)
     fun image(x: Number, y: Number, image: ImageBitmap, scale: Number = 1f)
-    fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean = true)
-    fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean = true)
-    fun square(centerX: Number, centerY: Number, size: Number, color: Color, fill: Boolean = true) {
-        rectangle(centerX.toFloat() - size.toFloat() / 2, centerY.toFloat() - size.toFloat() / 2, size, size, color)
+    fun circle(x: Number, y: Number, radius: Number, color: Color, fill: Boolean = true, breadth: Number = 4f)
+    fun rectangle(x: Number, y: Number, width: Number, height: Number, color: Color, fill: Boolean = true, breadth: Number = 4f)
+    fun square(centerX: Number, centerY: Number, size: Number, color: Color, fill: Boolean = true, breadth: Number = 4f) {
+        rectangle(centerX.toFloat() - size.toFloat() / 2, centerY.toFloat() - size.toFloat() / 2, size, size, color, fill, breadth)
     }
 
-    fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, width: Number = 4f)
+    fun line(x1: Number, y1: Number, x2: Number, y2: Number, color: Color, breadth: Number = 4f)
 }
