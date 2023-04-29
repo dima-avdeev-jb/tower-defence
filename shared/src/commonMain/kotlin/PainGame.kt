@@ -5,61 +5,10 @@ class House(val x: Double, val y: Double) {
 }
 
 class PaintGame : BaseGame() {
-
     var mouseX: Double = 0.0
     var mouseY: Double = 0.0
     var onMouseDownHouse: Boolean = false
     val houses: MutableList<House> = mutableListOf()
-
-    override fun tick() {
-
-    }
-
-    override fun drawGame(draw: Draw) { // draw - рисовать
-        for (i in 0..10) {
-            val x = i * 100
-            draw.line(x, 0, x, 1000, Color.Blue.copy(0.3f), 1)
-            draw.text(x, 50, "$x")
-        }
-
-        for (i in 0..10) {
-            val y = i * 100
-            draw.line(0, y, 1000, y, Color.Blue.copy(0.3f), 1)
-            draw.text(50, y, "$y")
-        }
-        for (i in 1..9) {
-            drawHouse(draw, i * 100, 100, true)
-        }
-        for (i in 1..9) {
-            drawHouse(draw, i * 100, 300, true)
-        }
-
-        if (onMouseDownHouse) {
-            drawHouse(draw, mouseX, mouseY, false)
-        }
-
-        for (house in houses) {
-            drawHouse(draw, house.x, house.y, true)
-        }
-
-//        draw.rectangle(0, 0, 500, 500, Color.Yellow)
-//        draw.square(100, 100, 200, Color.Black)
-//        draw.circle(500, 700, 10, Color.Black)
-//        draw.square(100, 300, 100, Color.Green)
-//        draw.rectangle(100, 500, 200, 100, Color.Red)
-//        draw.line(0, 0, 900, 900, Color.Red)
-//        draw.image(500, 500, getImage("castle.png"), 2f)
-//        draw.text(500, 900, "I am Text")T
-    }
-
-    fun drawHouse(draw: Draw, x: Number, y: Number, filled: Boolean) {
-        val xd: Double = x.toDouble()
-        val yd: Double = y.toDouble()
-        draw.square(xd + 50, yd + 50, 100, Color.Black, filled)
-        draw.line(xd + 0, yd + 100, xd + 50, yd + 150, Color.Black)
-        draw.line(xd + 100, yd + 100, xd + 50, yd + 150, Color.Black)
-        draw.square(xd + 50, yd + 50, 25, Color.Blue, filled)
-    }
 
     override fun onMouseMove(x: Double, y: Double) {
         mouseX = x
@@ -74,6 +23,48 @@ class PaintGame : BaseGame() {
         houses.add(House(x, y))
         // Размещать домик
         onMouseDownHouse = false
+    }
+
+    override fun drawGame(draw: Draw) { // draw - рисовать
+        for (i in 0..10) {
+            val x = i * 100
+            draw.line(x, 0, x, 1000, Color.Blue.copy(0.3f), 1)
+            draw.text(x, 50, "$x")
+        }
+        for (i in 0..10) {
+            val y = i * 100
+            draw.line(0, y, 1000, y, Color.Blue.copy(0.3f), 1)
+            draw.text(50, y, "$y")
+        }
+        for (i in 1..9) {
+            drawHouse(draw, i * 100, 100, false)
+        }
+        for (i in 1..9) {
+            drawHouse(draw, i * 100, 300, false)
+        }
+        if (onMouseDownHouse) {
+            drawHouse(draw, mouseX, mouseY, true)
+        }
+        for (house in houses) {
+            drawHouse(draw, house.x, house.y, false)
+        }
+    }
+
+    fun drawHouse(draw: Draw, x: Number, y: Number, transparent: Boolean) {
+        val xd: Double = x.toDouble()
+        val yd: Double = y.toDouble()
+        var alpha = 1.0f
+        if (transparent == true) {
+            alpha = 0.3f
+        }
+        draw.square(xd + 50, yd + 50, 100, Color.Black.copy(alpha), false)
+        draw.line(xd + 0, yd + 100, xd + 50, yd + 150, Color.Black.copy(alpha))
+        draw.line(xd + 100, yd + 100, xd + 50, yd + 150, Color.Black.copy(alpha))
+        draw.square(xd + 50, yd + 50, 25, Color.Blue.copy(alpha), false)
+    }
+
+    override fun tick() {
+
     }
 
 }
