@@ -5,24 +5,19 @@ class House(val x: Double, val y: Double) {
 }
 
 class PaintGame : BaseGame() {
-    var mouseX: Double = 0.0
-    var mouseY: Double = 0.0
-    var onMouseDownHouse: Boolean = false
-    val houses: MutableList<House> = mutableListOf()
+    val houses: MutableList<House> = mutableListOf(House(500.0, 500.0))
 
     override fun onMouseMove(x: Double, y: Double) {
-        mouseX = x
-        mouseY = y
+
     }
 
     override fun onMouseDown(x: Double, y: Double) {
-        onMouseDownHouse = true
+        houses.add(House(x, y))
+        // Размещать домик
     }
 
     override fun onMouseUp(x: Double, y: Double) {
-        houses.add(House(x, y))
-        // Размещать домик
-        onMouseDownHouse = false
+
     }
 
     override fun drawGame(draw: Draw) { // draw - рисовать
@@ -41,9 +36,6 @@ class PaintGame : BaseGame() {
         }
         for (i in 1..9) {
             drawHouse(draw, i * 100, 300, false)
-        }
-        if (onMouseDownHouse) {
-            drawHouse(draw, mouseX, mouseY, true)
         }
         for (house in houses) {
             drawHouse(draw, house.x, house.y, false)
