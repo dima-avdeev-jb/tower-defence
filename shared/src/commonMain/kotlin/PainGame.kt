@@ -18,7 +18,10 @@ class PaintGame : BaseGame() {
             draw.line(0, y, 1000, y, Color.Blue.copy(0.3f), 1)
             draw.text(50, y, "$y")
         }
-
+        draw.square(500, 500, 100, Color.Black)
+        draw.line(450, 550, 500, 600, Color.Black)
+        draw.line(550, 550, 500, 600, Color.Black)
+        draw.square(500, 500, 25, Color.Blue)
 //        draw.rectangle(0, 0, 500, 500, Color.Yellow)
 //        draw.square(100, 100, 200, Color.Black)
 //        draw.circle(500, 700, 10, Color.Black)
