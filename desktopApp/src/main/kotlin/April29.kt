@@ -39,9 +39,11 @@ fun April29() {
 class Cat(val x:Int){
     fun cats(){
         println("You have $x cats")
+        println(x)
     }
 }
 //fun practik(x:Int) {
 //    println("Tvoe cislo $x")-0
+
 }
 
