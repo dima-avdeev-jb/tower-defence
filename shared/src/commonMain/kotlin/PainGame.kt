@@ -1,5 +1,4 @@
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.window.WindowPosition.PlatformDefault.y
 
 class House(val x: Double, val y: Double) {
 
@@ -7,7 +6,7 @@ class House(val x: Double, val y: Double) {
 
 class PaintGame : BaseGame() {
     val houses: MutableList<House> = mutableListOf(House(500.0, 500.0))
-    val Enemys1: MutableList<Enemy1> = mutableListOf(Enemy1(1.0,1.0))
+    val enemies: MutableList<Enemy1> = mutableListOf(Enemy1(1.0, 1.0), Enemy1(100.0, 1.0))
     override fun onMouseDown(x: Double, y: Double) {
         houses.add(House(x, y))
         // Размещать домик
@@ -33,9 +32,11 @@ class PaintGame : BaseGame() {
         for (house in houses) {
             drawHouse(draw, house.x, house.y, false)
         }
-        for(Enemy in Enemys1){
-            draw.circle(Enemy.x, Enemy.y, 25, Color.Red)
+
+        for (e in enemies) {
+            draw.circle(e.x, e.y, 25, Color.Red)
         }
+
     }
 
     fun drawHouse(draw: Draw, x: Number, y: Number, transparent: Boolean) {
@@ -50,13 +51,17 @@ class PaintGame : BaseGame() {
         draw.line(xd + 100, yd + 100, xd + 50, yd + 150, Color.Black.copy(alpha))
         draw.square(xd + 50, yd + 50, 25, Color.Blue.copy(alpha), false)
     }
+
     override fun tick() {
-    for(i in )
+        for (e in enemies) {
+            e.move()
+        }
     }
 
 }
-class Enemy1(var x:Double,var y:Double){
-    fun move(){
+
+class Enemy1(var x: Double, var y: Double) {
+    fun move() {
         y += 1
 
     }
