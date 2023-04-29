@@ -1,7 +1,7 @@
 fun April29() {
     practik(123)
-    val cat = Cat(3)
-    cat.cats()
+//    val cat = Cat(3)
+//    cat.cats()
 //    println("April 29")
 //    var abc123: Int = 123
 //    var dist: Double = distance(1.0, 1.0, 2.0, 2.0)
@@ -36,11 +36,11 @@ fun April29() {
 //        hello()
 //    }
 }
-class Cat(val x:Int){
-    fun cats(){
-        println("You have $x cats")
-    }
-}
+//class Cat(val x:Int){
+//    fun cats(){
+//        println("You have $x cats")
+//    }
+//}
 
 fun practik(x:Int) {
     println("Tvoe cislo $x")
