@@ -7,6 +7,7 @@ class House(val x: Double, val y: Double) {
 class PaintGame : BaseGame() {
     val houses: MutableList<House> = mutableListOf(House(500.0, 500.0))
     val enemies: MutableList<Enemy1> = mutableListOf(Enemy1(1.0, 1.0), Enemy1(100.0, 1.0))
+    var cat1 = Cat(250, 50)
     override fun onMouseDown(x: Double, y: Double) {
         houses.add(House(x, y))
         // Размещать домик
@@ -36,7 +37,7 @@ class PaintGame : BaseGame() {
         for (e in enemies) {
             draw.circle(e.x, e.y, 25, Color.Red)
         }
-
+        draw.circle(cat1.x, cat1.y, 50, Color.Red)
     }
 
     fun drawHouse(draw: Draw, x: Number, y: Number, transparent: Boolean) {
@@ -65,4 +66,7 @@ class Enemy1(var x: Double, var y: Double) {
         y += 1
 
     }
+}
+class Cat(var x:Int, var y:Int){
+
 }
